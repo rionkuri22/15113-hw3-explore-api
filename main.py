@@ -17,7 +17,7 @@ class NewsWordleApp:
         self.source_name = ""
         self.revealed_hint = ""
 
-        # Huge Fonts for readability
+        # UI Fonts
         self.header_font = font.Font(family="Courier", size=36, weight="bold")
         self.subhead_font = font.Font(family="Courier", size=20, weight="bold")
         self.headline_font = font.Font(family="Verdana", size=24)
@@ -29,7 +29,6 @@ class NewsWordleApp:
         tk.Label(root, text="TOP 5 DAILY HEADLINES", font=self.header_font, 
                  bg="#2d2d2d", fg="#00ff00").pack(pady=(60, 5))
 
-        # Dynamic Subheading (e.g., GUESS THE 6 LETTER SUBJECT)
         self.label_subhead = tk.Label(root, text="", font=self.subhead_font, 
                                       bg="#2d2d2d", fg="#00ff00")
         self.label_subhead.pack(pady=(0, 5))
@@ -53,20 +52,19 @@ class NewsWordleApp:
         self.entry_guess.pack(pady=10)
         
         self.placeholder = "TYPE ANSWER"
-        self.entry_guess.insert(0, self.placeholder)
-        self.entry_guess.config(fg="#444")
+        self.add_placeholder(None) # Initial setup
+        
+        # Binding events
         self.entry_guess.bind("<FocusIn>", self.clear_placeholder)
         self.entry_guess.bind("<FocusOut>", self.add_placeholder)
         self.entry_guess.bind('<Return>', lambda event: self.check_guess())
 
-        # Big Neon Button
         self.btn_guess = tk.Button(root, text="SUBMIT GUESS", command=self.check_guess, 
                                    font=self.button_font, fg="#1a1a1a", bg="#00ff00", 
                                    activebackground="#00cc00", activeforeground="#1a1a1a",
                                    highlightthickness=0, bd=0, padx=80, pady=30, cursor="hand2")
         self.btn_guess.pack(pady=50)
 
-        # Skip Button (Bottom Right)
         self.btn_skip = tk.Button(root, text="SKIP TO NEXT >", command=self.load_next_game, 
                                   font=("Courier", 14, "bold"), fg="#666", bg="#2d2d2d",
                                   activebackground="#2d2d2d", activeforeground="#ffffff", 
@@ -76,11 +74,13 @@ class NewsWordleApp:
         self.fetch_top_5_news()
 
     def clear_placeholder(self, event):
+        """Standard clear logic"""
         if self.entry_guess.get() == self.placeholder:
             self.entry_guess.delete(0, tk.END)
             self.entry_guess.config(fg="#00ff00")
 
     def add_placeholder(self, event):
+        """Standard add logic"""
         if not self.entry_guess.get():
             self.entry_guess.insert(0, self.placeholder)
             self.entry_guess.config(fg="#444")
@@ -122,15 +122,18 @@ class NewsWordleApp:
         self.headline_body = current_data["title"]
         self.source_name = f"SOURCE: {current_data['source']}"
         
-        # Update UI Elements
         self.label_subhead.config(text=f"GUESS THE {len(self.target)} LETTER SUBJECT")
         self.label_counter.config(text=f"HEADLINE {self.current_index + 1} OF 5")
         
         self.revealed_hint = "_" * len(self.target)
         self.update_display()
         
+        # --- THE FIX: Hard Reset for new round ---
         self.entry_guess.delete(0, tk.END)
-        self.add_placeholder(None)
+        self.entry_guess.insert(0, self.placeholder)
+        self.entry_guess.config(fg="#444")
+        self.root.focus_set() # Moves focus away from the box so FocusIn works again
+        
         self.current_index += 1
 
     def update_display(self):
@@ -148,9 +151,11 @@ class NewsWordleApp:
         else:
             self.reveal_one_letter()
             self.update_display()
+            # Wrong guess reset
             self.entry_guess.delete(0, tk.END)
-            if "_" not in self.revealed_hint:
-                self.show_custom_popup("REVEALED", self.headline_body)
+            self.entry_guess.insert(0, self.placeholder)
+            self.entry_guess.config(fg="#444")
+            self.root.focus_set()
 
     def reveal_one_letter(self):
         hint_list = list(self.revealed_hint)
@@ -163,7 +168,7 @@ class NewsWordleApp:
     def show_custom_popup(self, title, message, is_final=False):
         win = tk.Toplevel()
         win.title(title)
-        win.geometry("800x500") # Keeping size, filling the space
+        win.geometry("800x500")
         win.configure(bg="#1a1a1a")
         win.transient(self.root) 
         win.grab_set() 
@@ -171,10 +176,8 @@ class NewsWordleApp:
         tk.Label(win, text=title, font=("Courier", 32, "bold"), bg="#1a1a1a", fg="#00ff00").pack(pady=20)
         
         if not is_final:
-            # Answer is now huge
             tk.Label(win, text=self.target.upper(), font=("Courier", 60, "bold"), bg="#1a1a1a", fg="#ffffff").pack(pady=5)
         
-        # Message/Headline is much larger
         tk.Label(win, text=message, font=("Verdana", 20), bg="#1a1a1a", fg="#aaaaaa", 
                  wraplength=750, justify="center").pack(pady=20)
         
