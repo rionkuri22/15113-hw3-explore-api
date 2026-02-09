@@ -1,0 +1,27 @@
+Some prompts used in dev:
+
+Some rough ideas I have. Tell me what free APIs I could use to make these work or how I should tweak the idea to make it more feasible
+1. Something like wordle but for top stories of the day
+Should not include stop words and also prevent general words like “said”
+Regardless of if right or wrong, shows actual headline for all 5 at the end of the game
+2. wavelength game where computer has 1 headline or fact or sth like that in mind and then uses API to set an answer for how democratic or republican biased it is and the user has to guess by pulling wheel 
+3.help user practice fermi by asking random questions about size and quantity like how many iphones are sold in a year or how much bigger is the United Statets than Japan and correct if roughky correct 
+
+Idea 1 and 3 which is going to be easier 
+For eaxmple for 1 i worry about how to make it just hard enough because guessing a whole headline even in hangman style is nearly impossilbe eg) "Why Morgan McSweeney's resignation matters for Sir Keir Starmer".
+Ideally, I want it to have it ask for things like "bad bunny" "Super bowl" "ICE"
+For 3, I worry how soon users will start to running into repeated questions.
+
+Limit this to top 5 of the day. Make sure not just random headlines I want top 5.
+If possibel make it so that only pull from API once during the day and just use based off that.
+Everytime get it wrong, 1 letter should reveal itself so that in the end can see full headline
+Make everything a little more visually pleasing also, Larger text etc
+
+How does this work right now? Is the API pulling everytime I play it?
+How come I seem to be able to play more than 5
+
+Make it so that counts and shows count of headline. And after 5 finishes.
+Change title needs to tell that from top 5 news headkines or sth like that
+After round 3 or 4, type answer here is actual text in the box that i have to delete to write. fix
+Make the text for the title, question and source all much bigger.
+Make it so that enter can get me out of the popup
